@@ -4,24 +4,34 @@ import { GoogleLogin } from 'react-google-login'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import useStyles from './styles'
 import {useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 import Input from "./Input";
 import Icon from "./icon";
-import {useNavigate} from "react-router-dom";
+import { signin, signup } from '../../actions/auth'
+
+const initialState = { firstName:'', lastName:'', email:'', password:'', confirmPassword:''}
 
 const Auth = () => {
     const classes = useStyles()
     const [isSignup, setIsSignup] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState(initialState);
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const handleSubmit = () => {
-
+    const handleSubmit = (e) => {
+        e.preventDefault() // Prevents page from refreshing
+         console.log(formData)
+        if (isSignup) {
+            dispatch(signup(formData, navigate))
+        } else {
+            dispatch(signin(formData, navigate))
+        }
     }
 
-    const handleChange = () => {
-
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value})
     }
 
     const googleSuccess = async (res) => {
